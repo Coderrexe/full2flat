@@ -11,11 +11,10 @@ from torch.autograd import Variable
 import torchvision.transforms as transforms
 from tqdm.auto import tqdm
 
-from dataset import UnpairedDepthDataset
-from model import Generator, GlobalGenerator2, InceptionV3
-import networks
-import util.util as util
-from util.visualizer2 import Visualizer
+from data.dataset import UnpairedDepthDataset
+from models import Generator, GlobalGenerator2, InceptionV3, networks
+import utils.util as util
+from utils.visualizer2 import Visualizer
 from utils import channel2width, createNRandompatches, LambdaLR, weights_init_normal
 
 parser = argparse.ArgumentParser()
@@ -178,7 +177,7 @@ print('----------- loaded networks ---------------------- !!')
 
 # Losses
 # MSE
-criterionGAN = networks.GANLoss(use_lsgan=True, target_real_label=1.0, target_fake_label=0.0, reduceme=True).to(device)
+criterionGAN = networks.GANLoss(use_lsgan=True, target_real_label=1.0, target_fake_label=0.0, calculate_mean=True).to(device)
 
 criterion_MSE = torch.nn.MSELoss(reduce=True)
 criterionCycle = torch.nn.L1Loss()
@@ -461,8 +460,6 @@ for epoch in range(opt.epoch, opt.n_epochs):
     save_dir = os.path.join(opt.checkpoints_dir, opt.name, 'generated_images')
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-
-    from torchvision.utils import save_image
 
     # save_image(fake_B.data, f'results/exp2/generated_imgs/epoch_{epoch+1}_fake_B.png', normalize=True)
     # save_image(fake_A.data, f'results/exp2/generated_imgs/epoch_{epoch+1}_fake_A.png', normalize=True)

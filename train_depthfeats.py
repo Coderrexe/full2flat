@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import argparse
-import itertools
 
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
@@ -9,22 +8,16 @@ from torch.autograd import Variable
 from PIL import Image
 import torch
 
-from model import Generator, GlobalGenerator2
-from net_canny import CannyNet
+from models import GlobalGenerator2, networks
 # from utils import ReplayBuffer
 from utils import LambdaLR
 # from utils import Logger
 from utils import weights_init_normal
-from datasets import ImageDataset
 # from aligned_dataset import AlignedDataset, LineDrawings
 from dataset_caroline import LineDrawings, LineDrawings_sketch, NeuralContours, LineDrawingsPlusPlus, ImageDataset_styles
-import utils_pl
 from collections import OrderedDict
-import util.util as util
-# from util.visualizer import Visualizer
-from vgg import Vgg16
-import networks
-import numpy as np
+import utils.util as util
+# from utils.visualizer import Visualizer
 import os
 
 parser = argparse.ArgumentParser()
@@ -161,10 +154,10 @@ name = opt.name #'testing2d'
 
 tensor2im = util.tensor2im
 if opt.midas > 0:
-    from util.visualizer2 import Visualizer
+    from utils.visualizer2 import Visualizer
     tensor2im = util.tensor2imv2
 else:
-    from util.visualizer import Visualizer
+    from utils.visualizer import Visualizer
 
 visualizer = Visualizer(checkpoints_dir, name, tf_log=True, isTrain=True)
 print('------------------- created visualizer -------------------')

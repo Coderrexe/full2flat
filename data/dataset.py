@@ -1,3 +1,7 @@
+"""
+Define the dataset class
+"""
+
 import os
 
 import cv2
@@ -6,8 +10,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
 
-from base_dataset import get_params, get_transform
-
+from data.base_dataset import get_params, get_transform
 
 IMG_EXTENSIONS = [".jpg", ".JPG", ".jpeg", ".JPEG", ".png", ".PNG"]
 
@@ -39,8 +42,7 @@ def make_dataset(dir, stop=10000):
 
 
 class UnpairedDepthDataset(Dataset):
-    def __init__(self, root, root2, opt, transforms_r=None, mode="train", midas=False, depthroot=""):
-
+    def __init__(self, root, root2, opt, transform=None, mode="train", midas=False, depthroot="", sketchroot=""):
         self.root = root
         self.mode = mode
         self.midas = midas
@@ -48,9 +50,10 @@ class UnpairedDepthDataset(Dataset):
         all_img = make_dataset(self.root)
 
         self.depth_maps = 0
-        if self.midas:
+        self.sketchroot = sketchroot
+        depthroot = sketchroot
 
-            depth = []
+        if depthroot != "":
             print(depthroot)
             if os.path.exists(depthroot):
                 depth = make_dataset(depthroot)
@@ -59,7 +62,7 @@ class UnpairedDepthDataset(Dataset):
                 import sys
                 sys.exit(0)
 
-            newimages = []
+            new_images = []
             self.depth_maps = []
 
             for dmap in depth:
@@ -67,18 +70,18 @@ class UnpairedDepthDataset(Dataset):
                 trainName1 = os.path.join(self.root, lastname)
                 trainName2 = os.path.join(self.root, lastname.split(".")[0] + ".jpg")
                 if (os.path.exists(trainName1)):
-                    newimages += [trainName1]
+                    new_images += [trainName1]
                 elif (os.path.exists(trainName2)):
-                    newimages += [trainName2]
-            print("found %d correspondences" % len(newimages))
+                    new_images += [trainName2]
+            print(f"Found {len(new_images)} paired images.")
 
             self.depth_maps = depth
-            all_img = newimages
+            all_img = new_images
 
         self.data = all_img
         self.mode = mode
 
-        self.transform_r = transforms.Compose(transforms_r)
+        self.transform = transforms.Compose(transform)
 
         self.opt = opt
 
@@ -115,7 +118,7 @@ class UnpairedDepthDataset(Dataset):
         B_transform = get_transform(self.opt, transform_params, grayscale=(self.opt.output_nc == 1), norm=False)
 
         if self.mode != "train":
-            A_transform = self.transform_r
+            A_transform = self.transform
 
         img_r = A_transform(img_r)
 
@@ -127,6 +130,10 @@ class UnpairedDepthDataset(Dataset):
         if self.midas:
             img_depth = cv2.imread(self.depth_maps[index])
             img_depth = A_transform(Image.fromarray(img_depth.astype(np.uint8)).convert("RGB"))
+
+        if self.sketchroot != "":
+            img_depth = cv2.imread(self.depth_maps[index])
+            img_depth = A_transform(Image.fromarray(img_depth.astype(np.uint8)).convert("L"))
 
         img_normals = 0
         label = 0

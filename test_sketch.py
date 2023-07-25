@@ -8,11 +8,10 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 import torch
 
-from model import Generator, GlobalGenerator2, InceptionV3
-from dataset import UnpairedDepthDataset
+from models.model import Generator, GlobalGenerator2, InceptionV3
+from data.dataset import UnpairedDepthDataset
 from PIL import Image
-import numpy as np
-from utils import channel2width
+from utils.utils import channel2width
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', required=True, type=str, help='name of this experiment')
@@ -106,7 +105,7 @@ with torch.no_grad():
     transforms_r = [transforms.Resize(int(opt.size), Image.BICUBIC),
                     transforms.ToTensor()]
 
-    test_data = UnpairedDepthDataset(opt.dataroot, '', opt, transforms_r=transforms_r,
+    test_data = UnpairedDepthDataset(opt.dataroot, '', opt, transform=transforms_r,
                                      mode=opt.mode, midas=opt.midas > 0, depthroot=opt.depthroot)
 
     dataloader = DataLoader(test_data, batch_size=opt.batchSize, shuffle=False)

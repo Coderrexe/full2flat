@@ -8,3 +8,8 @@ generated_images/
 results/
 test/
 wandb/
+new_cartoons/
+train2.py
+train_archive.py
+train_depthfeats.py
+environment2.yml

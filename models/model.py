@@ -95,6 +95,9 @@ class Generator(nn.Module):
         return out
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+
 # Define a ResNet block.
 class ResnetBlock(nn.Module):
     def __init__(self, dim, padding_type, norm_layer, activation=nn.ReLU(True), use_dropout=False):
@@ -187,7 +190,8 @@ class GlobalGenerator2(nn.Module):
 class InceptionV3(nn.Module):  # avg pool
     def __init__(self, num_classes, isTrain, use_aux=True, pretrain=False, freeze=True, every_feat=False):
         super(InceptionV3, self).__init__()
-        """ Inception v3 expects (299,299) sized images for training and has auxiliary output
+        """
+        Inception v3 expects (299,299) sized images for training and has auxiliary output
         """
 
         self.every_feat = every_feat
