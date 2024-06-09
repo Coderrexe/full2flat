@@ -1,3 +1,7 @@
 # Towards a Novel Multi-Loss CycleGAN for Full-to-Flat Colour Transformation
 
 ### This research project was completed during my summer internship at SketchX, CVSSP, University of Surrey.
+### Abstract
+Full colour to flat colour transformation tools are essential in digital art and design for simplifying detailed, gradient-rich images, useful in creating vector illustrations, comics, animations, and general graphic design that emphasise clarity for various stylistic and practical applications. However, such existing transformation tools are 1) not autonomous, and require much human operation, and 2) often inaccurate for images of different styles. With the prevalence of generative AI, in this paper, we propose a novel Generative Adversarial Network (GAN) AI pipeline for transforming full colour into flat colour, trained on a hand-picked unpaired dataset of full colour and flat colour images. Specifically, we employ a CycleGAN architecture with additional loss functions; aside from the standard GAN adversarial loss, discriminant loss and cycle consistency, we employ depth geometry loss with InceptionV3 network, sketch extractor loss with a pretrained line extractor model, and semantics loss with OpenAI's CLIP model. The resulting AI model generalises well for images of all styles, requires no human input, and preserves inherent image semantics, depth, shape and textual information.
+
+![Research Poster](./Poster.png)
